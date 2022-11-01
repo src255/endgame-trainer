@@ -1,4 +1,5 @@
 use rand::Rng;
+use std::str::FromStr;
 
 pub enum Endgame {
     QueenVsRook,
@@ -7,7 +8,7 @@ pub enum Endgame {
 
 impl Endgame {
     pub fn build(name: &str) -> Result<Endgame, &'static str> {
-        match name {
+        match name.to_ascii_lowercase().as_str() {
             "q-r" => Ok(Endgame::QueenVsRook),
             "rb-r" => Ok(Endgame::RookBishopVsRook),
             _ => Err("Unrecognized endgame type"),
@@ -25,6 +26,18 @@ impl Endgame {
                 let i = rng.gen_range(0..RB_R.len());
                 format!("{} w - -", RB_R[i])
             }
+        }
+    }
+}
+
+impl FromStr for Endgame {
+    type Err = &'static str;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.to_ascii_lowercase().as_str() {
+            "qr" | "q-r" => Ok(Endgame::QueenVsRook),
+            "rbr" | "rb-r" => Ok(Endgame::RookBishopVsRook),
+            _ => Err("Unrecognized endgame"),
         }
     }
 }
