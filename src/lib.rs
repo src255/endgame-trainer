@@ -7,11 +7,11 @@ pub enum Endgame {
 }
 
 impl Endgame {
-    pub fn build(name: &str) -> Result<Endgame, &'static str> {
-        match name.to_ascii_lowercase().as_str() {
-            "q-r" => Ok(Endgame::QueenVsRook),
-            "rb-r" => Ok(Endgame::RookBishopVsRook),
-            _ => Err("Unrecognized endgame type"),
+    pub fn build(s: &str) -> Result<Endgame, &'static str> {
+        match s.to_ascii_lowercase().as_str() {
+            "qr" | "q-r" => Ok(Endgame::QueenVsRook),
+            "rbr" | "rb-r" => Ok(Endgame::RookBishopVsRook),
+            _ => Err("Unrecognized endgame"),
         }
     }
 
@@ -34,11 +34,7 @@ impl FromStr for Endgame {
     type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s.to_ascii_lowercase().as_str() {
-            "qr" | "q-r" => Ok(Endgame::QueenVsRook),
-            "rbr" | "rb-r" => Ok(Endgame::RookBishopVsRook),
-            _ => Err("Unrecognized endgame"),
-        }
+        Endgame::build(s)
     }
 }
 
