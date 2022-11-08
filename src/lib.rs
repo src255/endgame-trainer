@@ -7,7 +7,7 @@ pub enum Endgame {
 }
 
 impl Endgame {
-    pub fn build(s: &str) -> Result<Endgame, &'static str> {
+    pub fn build(s: &str) -> Result<Self, &'static str> {
         match s.to_ascii_lowercase().as_str() {
             "qr" | "q-r" => Ok(Endgame::QueenVsRook),
             "rbr" | "rb-r" => Ok(Endgame::RookBishopVsRook),
