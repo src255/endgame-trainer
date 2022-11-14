@@ -1,4 +1,4 @@
-use rand::Rng;
+use rand::seq::SliceRandom;
 use std::str::FromStr;
 
 pub enum Endgame {
@@ -16,15 +16,12 @@ impl Endgame {
     }
 
     pub fn generate_fen(&self) -> String {
-        let mut rng = rand::thread_rng();
         match self {
             Self::QueenVsRook => {
-                let i = rng.gen_range(0..Q_R.len());
-                format!("{} b - -", Q_R[i])
+                format!("{} b - -", Q_R.choose(&mut rand::thread_rng()).unwrap())
             }
             Self::RookBishopVsRook => {
-                let i = rng.gen_range(0..RB_R.len());
-                format!("{} w - -", RB_R[i])
+                format!("{} w - -", RB_R.choose(&mut rand::thread_rng()).unwrap())
             }
         }
     }
