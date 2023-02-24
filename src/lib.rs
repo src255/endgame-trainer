@@ -1,5 +1,5 @@
 use rand::seq::SliceRandom;
-use std::str::FromStr;
+use std::convert::TryFrom;
 
 pub enum Endgame {
     QueenVsRook,
@@ -7,14 +7,6 @@ pub enum Endgame {
 }
 
 impl Endgame {
-    pub fn build(s: &str) -> Result<Self, &'static str> {
-        match s.to_ascii_lowercase().as_str() {
-            "qr" | "q-r" => Ok(Endgame::QueenVsRook),
-            "rbr" | "rb-r" => Ok(Endgame::RookBishopVsRook),
-            _ => Err("Unrecognized endgame"),
-        }
-    }
-
     pub fn generate_fen(&self) -> String {
         match self {
             Self::QueenVsRook => {
@@ -27,11 +19,30 @@ impl Endgame {
     }
 }
 
-impl FromStr for Endgame {
-    type Err = &'static str;
+#[derive(Debug)]
+pub struct FenError(&'static str);
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Endgame::build(s)
+impl From<&'static str> for FenError {
+    fn from(value: &'static str) -> Self {
+        Self(value)
+    }
+}
+
+impl TryFrom<&str> for Endgame {
+    type Error = FenError;
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        match value.to_ascii_lowercase().as_str() {
+            "qr" | "q-r" => Ok(Endgame::QueenVsRook),
+            "rbr" | "rb-r" => Ok(Endgame::RookBishopVsRook),
+            _ => Err(FenError("Unrecognized endgame")),
+        }
+    }
+}
+
+impl TryFrom<String> for Endgame {
+    type Error = FenError;
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        Endgame::try_from(value.as_ref())
     }
 }
 
