@@ -19,28 +19,19 @@ impl Endgame {
     }
 }
 
-#[derive(Debug)]
-pub struct FenError(&'static str);
-
-impl From<&'static str> for FenError {
-    fn from(value: &'static str) -> Self {
-        Self(value)
-    }
-}
-
 impl TryFrom<&str> for Endgame {
-    type Error = FenError;
+    type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         match value.to_ascii_lowercase().as_str() {
             "qr" | "q-r" => Ok(Endgame::QueenVsRook),
             "rbr" | "rb-r" => Ok(Endgame::RookBishopVsRook),
-            _ => Err(FenError("Unrecognized endgame")),
+            _ => Err("Unrecognized endgame"),
         }
     }
 }
 
 impl TryFrom<String> for Endgame {
-    type Error = FenError;
+    type Error = &'static str;
     fn try_from(value: String) -> Result<Self, Self::Error> {
         Endgame::try_from(value.as_ref())
     }
